@@ -18,8 +18,10 @@ services:
       - "3000:9000"
       #  we dont need to do this container nginx can direct hit php:9000 as its internal communication is possible
       #  we need this port if we are communicating through local machine
-
-      # mysql:
-      # composer:
-      # npm:
-      # artisan:
+  mysql:
+    image: mysql:5.7
+    env_file:
+      - ./env/mysql.env
+    # composer:
+    # npm:
+    # artisan:
