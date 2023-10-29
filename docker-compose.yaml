@@ -1,9 +1,13 @@
-version: '3.8'
+version: "3.8"
+
 services:
   server:
-    image: 'nginx:stable-alpine'
+    # image: 'nginx:stable-alpine'
+    build:
+      context: .
+      dockerfile: dockerfiles/nginx.dockerfile
     ports:
-      - "8000:80"
+      - '8000:80'
     volumes:
       - ./src:/var/www/html
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
@@ -12,16 +16,10 @@ services:
       - mysql
   php:
     build:
-      context: ./dockerfiles
-      dockerfile: php.dockerfile
+      context: .
+      dockerfile: dockerfiles/php.dockerfile
     volumes:
       - ./src:/var/www/html:delegated
-      # we add delegated flag for performance we cannot use :ro
-      # as laravel will write some data into our host machine which we need
-    ports:
-      - "3000:9000"
-      #  we dont need to do this container nginx can direct hit php:9000 as its internal communication is possible
-      #  we need this port if we are communicating through local machine
   mysql:
     image: mysql:5.7
     env_file:
@@ -34,8 +32,8 @@ services:
       - ./src:/var/www/html
   artisan:
     build:
-      context: ./dockerfiles
-      dockerfile: php.dockerfile
+      context: .
+      dockerfile: dockerfiles/php.dockerfile
     volumes:
       - ./src:/var/www/html
     entrypoint: [ "php", "/var/www/html/artisan" ]
