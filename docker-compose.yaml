@@ -6,8 +6,20 @@ services:
       - "8000:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-    # php:
-    # mysql:
-    # composer:
-    # npm:
-    # artisan:
+  php:
+    build:
+      context: ./dockerfiles
+      dockerfile: php.dockerfile
+    volumes:
+      - ./src:/var/www/html:delegated
+      # we add delegated flag for performance we cannot use :ro
+      # as laravel will write some data into our host machine which we need
+    ports:
+      - "3000:9000"
+      #  we dont need to do this container nginx can direct hit php:9000 as its internal communication is possible
+      #  we need this port if we are communicating through local machine
+
+      # mysql:
+      # composer:
+      # npm:
+      # artisan:
